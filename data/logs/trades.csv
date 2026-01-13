@@ -1,0 +1,4 @@
+DateTime,Symbol,Direction,Lot,EntryPrice,SL,TP,ATR,EMA_Trend,RSI,ADX,ML_Conf,Spread,Reason,Result,PnL_Percent,Notes
+2026-01-01 09:00,EURUSD,BUY,0.1,1.0890,1.0850,1.0925,0.0012,Bull,55,25,0.67,0.00018,Trend+Pullback,TP,0.9,
+2026-01-01 10:00,GBPUSD,SELL,0.1,1.3020,1.3060,1.2980,0.0015,Bear,48,28,0.70,0.00020,Trend+ML Signal,SL,-0.9,
+2026-01-01 11:00,USDJPY,BUY,0.1,134.50,134.20,134.85,0.15,Bull,60,30,0.65,0.02,Trend+ML Signal,TP,1.0,

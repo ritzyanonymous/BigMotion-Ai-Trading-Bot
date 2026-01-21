@@ -1,0 +1,9 @@
+.env
+*.pyc
+__pycache__/
+*.log
+bot_state.json
+config.json
+data/logs/*.csv
+reports/*
+models/*.pkl

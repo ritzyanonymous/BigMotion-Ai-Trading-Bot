@@ -1,0 +1,20 @@
+{
+    "telegram_token": "YOUR_TELEGRAM_BOT_TOKEN_HERE",
+    "telegram_chat_id": "YOUR_TELEGRAM_CHAT_ID_HERE",
+    "mt5_login": "",
+    "mt5_password": "",
+    "mt5_server": "",
+    "loop_interval": 60,
+    "trading_pairs": ["EURUSD", "GBPUSD", "USDJPY", "XAUUSD", "USDCHF", "USDCNH", "AUDUSD", "NZDUSD"],
+    "timeframe": "H1",
+    "risk_per_trade": 0.9,
+    "max_trades_per_day": 3,
+    "max_daily_loss": 5.0,
+    "max_open_positions": 5,
+    "min_ml_confidence": 0.7,
+    "tp_splits": [0.40, 0.30, 0.30],
+    "ml_model_path": "models/trading_model.pkl",
+    "license_server_url": "https://license.yourdomain.com",
+    "offline_grace_days": 7,
+    "heartbeat_interval_hours": 24
+}

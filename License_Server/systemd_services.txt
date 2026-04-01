@@ -1,0 +1,56 @@
+# ============================================================
+# BigMotion License Server - systemd Service Files
+# Deploy on your Linux VPS for 24/7 operation
+# ============================================================
+#
+# INSTALL STEPS:
+#   1. Copy these two service files to /etc/systemd/system/
+#   2. sudo systemctl daemon-reload
+#   3. sudo systemctl enable bigmotion-license-server bigmotion-license-bot
+#   4. sudo systemctl start bigmotion-license-server bigmotion-license-bot
+#
+# CHECK STATUS:
+#   sudo systemctl status bigmotion-license-server
+#   sudo journalctl -u bigmotion-license-server -f
+# ============================================================
+
+# ---- Save as: /etc/systemd/system/bigmotion-license-server.service ----
+[Unit]
+Description=BigMotion License Server (Flask API)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/BigMotion_AutoFX_Bot_v3.1/License_Server
+ExecStart=/home/ubuntu/BigMotion_AutoFX_Bot_v3.1/License_Server/venv/bin/gunicorn \
+    --workers 4 \
+    --bind 0.0.0.0:5000 \
+    --timeout 120 \
+    --access-logfile /home/ubuntu/BigMotion_AutoFX_Bot_v3.1/License_Server/access.log \
+    --error-logfile /home/ubuntu/BigMotion_AutoFX_Bot_v3.1/License_Server/error.log \
+    license_server:app
+Restart=always
+RestartSec=10
+EnvironmentFile=/home/ubuntu/BigMotion_AutoFX_Bot_v3.1/License_Server/.env
+
+[Install]
+WantedBy=multi-user.target
+
+
+# ---- Save as: /etc/systemd/system/bigmotion-license-bot.service ----
+[Unit]
+Description=BigMotion Telegram License Bot
+After=network.target bigmotion-license-server.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/BigMotion_AutoFX_Bot_v3.1/License_Server
+ExecStart=/home/ubuntu/BigMotion_AutoFX_Bot_v3.1/License_Server/venv/bin/python3 telegram_license_bot.py
+Restart=always
+RestartSec=15
+EnvironmentFile=/home/ubuntu/BigMotion_AutoFX_Bot_v3.1/License_Server/.env
+
+[Install]
+WantedBy=multi-user.target

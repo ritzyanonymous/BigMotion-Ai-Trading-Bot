@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Licenses - BigMotion AutoFX Admin{% endblock %}
+{% block content %}
+<h2 class="mb-4">License Management</h2>
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <span><i class="fas fa-key"></i> All Licenses ({{ total_count }})</span>
+        <a href="{{ url_for('create_license') }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Create New
+        </a>
+    </div>
+    <div class="card-body">
+        <form class="row g-3 mb-3" method="GET">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Search email or license key" value="{{ search }}">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+                    <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                    <option value="expired" {% if status_filter == 'expired' %}selected{% endif %}>Expired</option>
+                    <option value="revoked" {% if status_filter == 'revoked' %}selected{% endif %}>Revoked</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="type" class="form-select">
+                    <option value="all" {% if type_filter == 'all' %}selected{% endif %}>All Types</option>
+                    <option value="trial" {% if type_filter == 'trial' %}selected{% endif %}>Trial</option>
+                    <option value="monthly" {% if type_filter == 'monthly' %}selected{% endif %}>Monthly</option>
+                    <option value="yearly" {% if type_filter == 'yearly' %}selected{% endif %}>Yearly</option>
+                    <option value="lifetime" {% if type_filter == 'lifetime' %}selected{% endif %}>Lifetime</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search"></i> Filter</button>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead><tr><th>Email</th><th>Type</th><th>Status</th><th>Expires</th><th>Actions</th></tr></thead>
+                <tbody>
+                    {% for license in licenses %}
+                    <tr>
+                        <td>{{ license.email }}</td>
+                        <td><span class="badge bg-primary">{{ license.license_type }}</span></td>
+                        <td><span class="badge badge-{{ license.status }}">{{ license.status }}</span></td>
+                        <td>{{ license.expires_at[:10] if license.expires_at else 'Never' }}</td>
+                        <td><a href="{{ url_for('license_detail', license_id=license.id) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

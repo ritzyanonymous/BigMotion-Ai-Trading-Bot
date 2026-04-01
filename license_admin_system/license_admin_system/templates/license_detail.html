@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}License Detail{% endblock %}
+{% block content %}
+<h2 class="mb-4">License Details</h2>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header"><i class="fas fa-info-circle"></i> License Information</div>
+            <div class="card-body">
+                <table class="table">
+                    <tr><th>Email:</th><td>{{ license.email }}</td></tr>
+                    <tr><th>License Key:</th><td><code>{{ license.license_key }}</code></td></tr>
+                    <tr><th>Type:</th><td><span class="badge bg-primary">{{ license.license_type }}</span></td></tr>
+                    <tr><th>Status:</th><td><span class="badge badge-{{ license.status }}">{{ license.status }}</span></td></tr>
+                    <tr><th>Created:</th><td>{{ license.created_at }}</td></tr>
+                    <tr><th>Expires:</th><td>{{ license.expires_at or 'Never' }}</td></tr>
+                    <tr><th>Hardware ID:</th><td>{{ license.hardware_id or 'Not activated yet' }}</td></tr>
+                    <tr><th>Last Seen:</th><td>{{ license.last_seen or 'Never' }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-tools"></i> Actions</div>
+            <div class="card-body">
+                {% if license.status == 'active' %}
+                <form method="POST" action="{{ url_for('extend_license', license_id=license.id) }}" class="mb-2">
+                    <div class="input-group mb-2">
+                        <input type="number" name="days" class="form-control" value="30" min="1">
+                        <button class="btn btn-success" type="submit"><i class="fas fa-plus"></i> Extend</button>
+                    </div>
+                </form>
+                <form method="POST" action="{{ url_for('revoke_license', license_id=license.id) }}">
+                    <input type="text" name="reason" class="form-control mb-2" placeholder="Reason for revocation">
+                    <button class="btn btn-danger w-100"><i class="fas fa-ban"></i> Revoke License</button>
+                </form>
+                {% else %}
+                <form method="POST" action="{{ url_for('activate_license', license_id=license.id) }}">
+                    <button class="btn btn-success w-100"><i class="fas fa-check"></i> Re-activate</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

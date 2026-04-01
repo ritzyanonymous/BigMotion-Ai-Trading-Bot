@@ -1,0 +1,34 @@
+# BigMotion AutoFX Trading Bot v3.0 - Production Requirements
+# Install with: pip install -r requirements.txt
+
+# Core Trading
+MetaTrader5>=5.0.45
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Machine Learning (Production-Ready)
+scikit-learn>=1.3.0
+xgboost>=2.0.0          # Main ML library - Extreme Gradient Boosting
+lightgbm>=4.0.0         # Fast gradient boosting - Microsoft
+
+# NOTE: catboost removed due to compilation requirements on Python 3.14
+# The bot works excellently with xgboost + lightgbm!
+
+# Reporting & Visualization
+reportlab>=4.0.0
+matplotlib>=3.7.0
+
+# Networking & API
+requests>=2.31.0
+
+# Telegram Notifications
+python-telegram-bot>=20.0
+
+# Licensing System
+cryptography>=41.0.0
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Building Executable (Development)
+pyinstaller>=6.0.0

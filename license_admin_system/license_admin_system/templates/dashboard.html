@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - BigMotion AutoFX Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Dashboard Overview</h2>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <i class="fas fa-users stat-icon"></i>
+            <div class="stat-number">{{ stats.active_licenses }}</div>
+            <div class="stat-label">Active Licenses</div>
+            <small class="text-muted">Currently active</small>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card">
+            <i class="fas fa-clock stat-icon"></i>
+            <div class="stat-number">{{ stats.trial_licenses }}</div>
+            <div class="stat-label">Trial Users</div>
+            <small class="text-muted">3-day trials</small>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card">
+            <i class="fas fa-dollar-sign stat-icon"></i>
+            <div class="stat-number">${{ "{:,.0f}".format(stats.mrr) }}</div>
+            <div class="stat-label">Monthly Revenue (MRR)</div>
+            <small class="text-muted">Per month</small>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card">
+            <i class="fas fa-chart-pie stat-icon"></i>
+            <div class="stat-number">${{ "{:,.0f}".format(stats.arr) }}</div>
+            <div class="stat-label">Annual Revenue (ARR)</div>
+            <small class="text-muted">Projected yearly</small>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Chart & License Distribution -->
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-area"></i> Revenue Trend (Last 6 Months)
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-pie-chart"></i> License Distribution
+            </div>
+            <div class="card-body">
+                <canvas id="licenseChart"></canvas>
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span><i class="fas fa-circle text-success"></i> Monthly</span>
+                        <strong>{{ stats.license_distribution.get('monthly', 0) }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span><i class="fas fa-circle text-primary"></i> Yearly</span>
+                        <strong>{{ stats.license_distribution.get('yearly', 0) }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span><i class="fas fa-circle text-warning"></i> Lifetime</span>
+                        <strong>{{ stats.license_distribution.get('lifetime', 0) }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span><i class="fas fa-circle text-info"></i> Trial</span>
+                        <strong>{{ stats.license_distribution.get('trial', 0) }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Licenses -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-key"></i> Recent Licenses</span>
+                <a href="{{ url_for('create_license') }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> Create New License
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Created</th>
+                                <th>Expires</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for license in recent_licenses %}
+                            <tr>
+                                <td>{{ license.email }}</td>
+                                <td>
+                                    {% if license.license_type == 'monthly' %}
+                                        <span class="badge bg-success">Monthly</span>
+                                    {% elif license.license_type == 'yearly' %}
+                                        <span class="badge bg-primary">Yearly</span>
+                                    {% elif license.license_type == 'lifetime' %}
+                                        <span class="badge bg-dark">Lifetime</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Trial</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ license.created_at[:10] }}</td>
+                                <td>
+                                    {% if license.license_type == 'lifetime' %}
+                                        ∞ Never
+                                    {% else %}
+                                        {{ license.expires_at[:10] if license.expires_at else 'N/A' }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if license.status == 'active' %}
+                                        <span class="badge badge-active">Active</span>
+                                    {% elif license.status == 'revoked' %}
+                                        <span class="badge badge-revoked">Revoked</span>
+                                    {% else %}
+                                        <span class="badge badge-expired">Expired</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('license_detail', license_id=license.id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('licenses') }}" class="btn btn-outline-primary">
+                        View All Licenses <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-bolt"></i> Quick Actions
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('create_license') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-plus-circle"></i> Create License
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('licenses', status='trial') }}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-clock"></i> View Trials
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('reports') }}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-chart-bar"></i> View Reports
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('licenses') }}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-search"></i> Search Licenses
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    const revenueData = {{ revenue_data | tojson }};
+    
+    new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: revenueData.map(d => d.month),
+            datasets: [{
+                label: 'Monthly Revenue ($)',
+                data: revenueData.map(d => d.revenue),
+                borderColor: '#00d4ff',
+                backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // License Distribution Chart
+    const licenseCtx = document.getElementById('licenseChart').getContext('2d');
+    const distribution = {{ stats.license_distribution | tojson }};
+    
+    new Chart(licenseCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Monthly', 'Yearly', 'Lifetime', 'Trial'],
+            datasets: [{
+                data: [
+                    distribution.monthly || 0,
+                    distribution.yearly || 0,
+                    distribution.lifetime || 0,
+                    distribution.trial || 0
+                ],
+                backgroundColor: ['#28a745', '#007bff', '#ffc107', '#17a2b8']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

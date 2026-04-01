@@ -1,0 +1,67 @@
+================================================================
+  🚀 BIGMOTION AUTOFX v3 - QUICK START
+================================================================
+
+PRODUCTION BUILD (xgboost + lightgbm - No CatBoost!)
+
+================================================================
+🎯 FASTEST WAY TO BUILD
+================================================================
+
+1. Install Requirements:
+   pip install -r requirements.txt
+
+2. Build:
+   pyinstaller BigMotion_Bot.spec
+
+3. Copy Model:
+   copy models\trading_model.pkl dist\models\
+
+4. Test:
+   cd dist
+   .\BigMotion_Trading_Bot.exe
+
+Done! Your .exe is ready to distribute!
+
+================================================================
+📖 COMPLETE GUIDE
+================================================================
+
+See PRODUCTION_BUILD_GUIDE.txt for:
+- Detailed setup instructions
+- Troubleshooting
+- Distribution checklist
+- Complete verification steps
+
+================================================================
+✅ WHAT'S INCLUDED
+================================================================
+
+- requirements.txt (xgboost + lightgbm only)
+- BigMotion_Bot.spec (production optimized)
+- version_info.txt (Windows file properties)
+- PRODUCTION_BUILD_GUIDE.txt (complete guide)
+- All trading bot source code
+
+================================================================
+💎 WHY NO CATBOOST?
+================================================================
+
+CatBoost requires Visual Studio compiler (3-5 GB!)
+
+You don't need it:
+✅ xgboost is your primary ML library
+✅ lightgbm is excellent backup
+✅ Simpler deployment
+✅ Smaller .exe (~100-110 MB)
+✅ Same performance!
+
+================================================================
+🚀 BUILD NOW!
+================================================================
+
+pip install -r requirements.txt
+pyinstaller BigMotion_Bot.spec
+copy models\trading_model.pkl dist\models\
+
+Your professional trading bot is ready! 💎

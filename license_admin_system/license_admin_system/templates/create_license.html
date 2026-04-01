@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Create License{% endblock %}
+{% block content %}
+<h2 class="mb-4">Create New License</h2>
+<div class="row"><div class="col-md-6">
+    <div class="card">
+        <div class="card-header"><i class="fas fa-plus"></i> License Details</div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Customer Email *</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">License Type *</label>
+                    <select name="license_type" class="form-select" id="licenseType" required>
+                        <option value="trial">Trial (3 days free)</option>
+                        <option value="monthly">Monthly ($49/month)</option>
+                        <option value="yearly">Yearly ($499/year)</option>
+                        <option value="lifetime">Lifetime ($2,999 one-time)</option>
+                    </select>
+                </div>
+                <div class="mb-3" id="durationField">
+                    <label class="form-label">Duration (days)</label>
+                    <input type="number" name="duration_days" class="form-control" value="30">
+                    <small class="text-muted">Auto-calculated based on license type</small>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" name="send_email" class="form-check-input" id="sendEmail">
+                    <label class="form-check-label" for="sendEmail">Send license key via email</label>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Create License</button>
+                <a href="{{ url_for('licenses') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div></div>
+<script>
+document.getElementById('licenseType').addEventListener('change', function() {
+    const type = this.value;
+    const durationField = document.querySelector('[name="duration_days"]');
+    if (type === 'trial') durationField.value = 3;
+    else if (type === 'monthly') durationField.value = 30;
+    else if (type === 'yearly') durationField.value = 365;
+    else durationField.value = 36500; // lifetime
+});
+</script>
+{% endblock %}
